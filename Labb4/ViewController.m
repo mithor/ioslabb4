@@ -13,10 +13,13 @@
 @property (weak, nonatomic) IBOutlet UIView *ball;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UILabel *labelText;
+@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (nonatomic) NSTimer *timer;
 @property (nonatomic) CGFloat speedX;
 @property (nonatomic) CGFloat speedY;
 @property (nonatomic) int score;
+@property (nonatomic) CGPoint ballPoint;
+@property (nonatomic) CGPoint paddlePoint;
 
 @end
 
@@ -39,6 +42,7 @@
     self.playButton.hidden=YES;
     self.labelText.hidden=YES;
     self.score = 0;
+    self.scoreLabel.text = [NSString stringWithFormat: @"%d", self.score];
     self.speedX = (float)(arc4random()%21)/10-1;
     self.speedY = (float)(arc4random()%11)/10+1;
     self.ball.center = CGPointMake(self.view.center.x, self.view.center.y/2);
@@ -82,6 +86,7 @@
     if (self.ball.center.y-self.ball.bounds.size.height/2 < 0) {
         self.speedY = -self.speedY*1.5;
         self.score++;
+        self.scoreLabel.text = [NSString stringWithFormat: @"%d", self.score];
     }
     if (self.ball.center.x-self.ball.bounds.size.width/2 < 0 || self.ball.center.x+self.ball.bounds.size.width/2 > self.ball.superview.frame.size.width) {
         self.speedX = -self.speedX;
@@ -91,7 +96,10 @@
     }
     
 }
-
+-(void)viewWillLayoutSubviews {
+    self.ballPoint = self.ball.center;
+    self.paddlePoint = self.mypaddle.center;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -102,6 +110,8 @@
 
 - (void)viewDidLayoutSubviews {
     self.mypaddle.frame = CGRectMake(self.mypaddle.superview.frame.size.width/2 - self.mypaddle.superview.frame.size.width/8, self.mypaddle.superview.frame.size.height - self.mypaddle.superview.frame.size.height/10, self.mypaddle.superview.frame.size.width/4, self.mypaddle.superview.frame.size.height/30);
+    self.ball.center = self.ballPoint;
+    self.mypaddle.center = self.paddlePoint;
     
 }
 
